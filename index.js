@@ -17,9 +17,12 @@ function viewMenu() { //fungsi untuk menampilkan halaman menu
     console.log("Main Menu :\n");
     console.log("1.Tambah Data \n");
     console.log("2.Lihat Data \n");
-    console.log("3.Hapus Data \n");
-    readline.question(`Silahkan Masukan Pilihan Anda  :`, input => {
-        mainMenu(Number(input))
+    console.log("3.Reset Data \n");
+    console.log("4.Pencarian Data \n");
+    console.log("5.Hapus Data \n");
+    console.log("0.Exit \n");
+    readline.question(`Silahkan Masukan Pilihan Anda: `, input => {
+        mainMenu(Number(input));
     });
 }
 
@@ -28,15 +31,27 @@ function viewMenu() { //fungsi untuk menampilkan halaman menu
 function mainMenu(pilihan) { // fungsi untuk mengatur pilihan menu
     switch (pilihan) {
         case 1:
-            simpan()
+            simpan();
             break;
         case 2:
-            lihatData() 
+            lihatData();
             break;
         // lanjutkan menu pilihanya disini secara urut
+        case 3:
+            resetData();
+            break;
+        case 4:
+            pencarianData();
+            break;
+        case 5:
+            hapusData();
+            break;
+        case 0:
+            readline.close();
+            break;
         default:
-            console.log("Pilihan Tidak Valid !");
-            readline.close()
+            console.log("Pilihan Tidak Valid!");
+            viewMenu();
             break;
     }
 }
@@ -44,47 +59,80 @@ function mainMenu(pilihan) { // fungsi untuk mengatur pilihan menu
 
 
 function simpan() { // fungsi untuk menyimpan data
-    console.log("Silahkan Masukan Data ! : ");
-    readline.question("Nama :", (nama) => {
+    console.log("\nSilahkan Masukan Data!");
+    readline.question("Nama: ", (nama) => {
         objectKontak.nama = nama
-        console.log(`Input data berhasil ! :${nama}`);
-        ambilInputanNomor()
-    })
+        ambilInputanNomor();
+    });
     
 }
 const ambilInputanNomor = () => { // fungsi untuk mengambil inputan nomor
-    readline.question("Nomor :", (nomor) => {
+    readline.question("Nomor: ", (nomor) => {
         objectKontak.nomorHp = nomor
         databaseKontak.push(Object.assign({},objectKontak)) // insert data kedalam array databseKOntak
-        kembali()
-    })
+        console.log("Input data berhasil")
+        kembali();
+    });
 }
 const kembali = () => { // fungsi untuk navigasi kembali
-    readline.question("Apakah Anda Ingin Kembali ? (y/n) :", (pilihan) => {
+    readline.question("\nApakah Anda Ingin Kembali? (y/n): ", (pilihan) => {
         if(pilihan === "y"){
-            viewMenu()
+            viewMenu();
         }else {
-            readline.close()
+            readline.close();
         }
         
-    })
+    });
 }
 
 function lihatData () { // fungsi untuk melihat list data
     console.table(databaseKontak);
-    kembali()
+    kembali();
 }
 
 function resetData () {
     // tambahkan fungsi reset  data disini
+    while(databaseKontak.length) {
+        databaseKontak.pop();
+    }
+    console.log("Data berhasil direset!");
+    kembali();
 }
 
 function pencarianData () {
-    // tambahkan fungsi pencarian data disini 
+    // tambahkan fungsi pencarian data disini
+    console.log("Masukkan kata kunci pencarian!");
+    readline.question("Kata Kunci: ", (keyword) => {
+        databaseKontak.filter((contact) => {
+            const dataFound = [
+                {
+                    nama: contact.nama,
+                    nomorHp: contact.nomorHp
+                }
+            ]
+            
+            if( keyword === contact.nama || keyword === contact.nomorHp ) {
+                console.log("Data ditemukan!");
+                console.table(dataFound);
+            }
+        });
+        kembali();
+    });
 }
 function hapusData () {
-    // tambahkan fungsi hapus data data disini 
+    // tambahkan fungsi hapus data data disini
+    console.log("Masukkan kata kunci data yang ingin dihapus!");
+    readline.question("Kata Kunci: ", (keyword) => {
+        const index = databaseKontak.findIndex((contact) => contact.nama === keyword);
+
+        databaseKontak.filter((contact) => {
+            if( keyword === contact.nama || keyword === contact.nomorHp ) databaseKontak.splice(index, 1);
+        });
+        console.log("Data berhasil dihapus!")
+        console.table(databaseKontak);
+        kembali();
+    });
 }
 
 
-viewMenu() // panggil fungsi view menu untuk pertama kali
+viewMenu(); // panggil fungsi view menu untuk pertama kali
