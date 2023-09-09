@@ -31,25 +31,32 @@ function viewMenu() { //fungsi untuk menampilkan halaman menu
 function mainMenu(pilihan) { // fungsi untuk mengatur pilihan menu
     switch (pilihan) {
         case 1:
+            console.clear();
             simpan();
             break;
         case 2:
+            console.clear();
             lihatData();
             break;
         // lanjutkan menu pilihanya disini secara urut
         case 3:
+            console.clear();
             resetData();
             break;
         case 4:
+            console.clear();
             pencarianData();
             break;
         case 5:
+            console.clear();
             hapusData();
             break;
         case 0:
+            console.clear();
             readline.close();
             break;
         default:
+            console.clear();
             console.log("Pilihan Tidak Valid!");
             viewMenu();
             break;
@@ -77,8 +84,10 @@ const ambilInputanNomor = () => { // fungsi untuk mengambil inputan nomor
 const kembali = () => { // fungsi untuk navigasi kembali
     readline.question("\nApakah Anda Ingin Kembali? (y/n): ", (pilihan) => {
         if(pilihan === "y"){
+            console.clear();
             viewMenu();
         }else {
+            console.clear();
             readline.close();
         }
         
@@ -99,37 +108,26 @@ function resetData () {
     kembali();
 }
 
+function cariKontak(keyword) {
+    return databaseKontak.filter((contact) => contact.nama.toLowerCase().includes(keyword.toLowerCase()));
+}
+
 function pencarianData () {
     // tambahkan fungsi pencarian data disini
     console.log("Masukkan kata kunci pencarian!");
     readline.question("Kata Kunci: ", (keyword) => {
-        databaseKontak.filter((contact) => {
-            const dataFound = [
-                {
-                    nama: contact.nama,
-                    nomorHp: contact.nomorHp
-                }
-            ]
-            
-            if( keyword === contact.nama || keyword === contact.nomorHp ) {
-                console.log("Data ditemukan!");
-                console.table(dataFound);
-            }
-        });
+        console.table(cariKontak(keyword));
         kembali();
     });
 }
 function hapusData () {
     // tambahkan fungsi hapus data data disini
-    console.log("Masukkan kata kunci data yang ingin dihapus!");
-    readline.question("Kata Kunci: ", (keyword) => {
-        const index = databaseKontak.findIndex((contact) => contact.nama === keyword);
+    console.log("Masukkan index data yang ingin dihapus!");
+    console.table(databaseKontak);
+    readline.question("index: ", (index) => {
+        databaseKontak.splice(index, 1);
 
-        databaseKontak.filter((contact) => {
-            if( keyword === contact.nama || keyword === contact.nomorHp ) databaseKontak.splice(index, 1);
-        });
-        console.log("Data berhasil dihapus!")
-        console.table(databaseKontak);
+        console.log("\nData berhasil dihapus!")
         kembali();
     });
 }
