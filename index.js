@@ -75,10 +75,15 @@ function simpan() { // fungsi untuk menyimpan data
 }
 const ambilInputanNomor = () => { // fungsi untuk mengambil inputan nomor
     readline.question("Nomor: ", (nomor) => {
-        objectKontak.nomorHp = nomor
-        databaseKontak.push(Object.assign({},objectKontak)) // insert data kedalam array databseKOntak
-        console.log("Input data berhasil")
-        kembali();
+        if (!isNaN(nomor)) {
+            objectKontak.nomorHp = nomor;
+            databaseKontak.push(Object.assign({}, objectKontak));
+            console.log("Input data berhasil");
+            kembali();
+        } else {
+            console.log("\nInput harus berupa nomor!");
+            ambilInputanNomor();
+        }
     });
 }
 const kembali = () => { // fungsi untuk navigasi kembali
@@ -109,7 +114,7 @@ function resetData () {
 }
 
 function cariKontak(keyword) {
-    return databaseKontak.filter((contact) => contact.nama.toLowerCase().includes(keyword.toLowerCase()));
+    return databaseKontak.filter((contact) => contact.nama.toLowerCase().includes(keyword.toLowerCase()) || contact.nomorHp.includes(keyword));
 }
 
 function pencarianData () {
