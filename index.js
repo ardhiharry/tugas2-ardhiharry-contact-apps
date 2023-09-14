@@ -68,20 +68,26 @@ function mainMenu(pilihan) { // fungsi untuk mengatur pilihan menu
 function simpan() { // fungsi untuk menyimpan data
     console.log("\nSilahkan Masukan Data!");
     readline.question("Nama: ", (nama) => {
-        objectKontak.nama = nama
-        ambilInputanNomor();
+        if( nama.match(/^[a-zA-Z ]*$/) ) {
+            objectKontak.nama = nama
+            ambilInputanNomor();
+        } else {
+            console.log("\nInput harus berupa huruf!");
+            simpan();
+        }
     });
     
 }
 const ambilInputanNomor = () => { // fungsi untuk mengambil inputan nomor
     readline.question("Nomor: ", (nomor) => {
-        if (!isNaN(nomor)) {
+        if ( nomor.match(/^(\+62|62|0)8[1-9][0-9]{6,9}$/) ) {
             objectKontak.nomorHp = nomor;
             databaseKontak.push(Object.assign({}, objectKontak));
             console.log("Input data berhasil");
             kembali();
         } else {
-            console.log("\nInput harus berupa nomor!");
+            console.log("\nInput harus berupa nomor dan sesuai dengan format nomor Indonesia!");
+            console.log("contoh: +628xx | 628xx | 08xx");
             ambilInputanNomor();
         }
     });
@@ -106,11 +112,18 @@ function lihatData () { // fungsi untuk melihat list data
 
 function resetData () {
     // tambahkan fungsi reset  data disini
-    while(databaseKontak.length) {
-        databaseKontak.pop();
-    }
-    console.log("Data berhasil direset!");
-    kembali();
+    readline.question("Apakah anda ingin reset semua data? (y/n): ", (pilihan) => {
+        if(pilihan === "y") {
+            while(databaseKontak.length) {
+                databaseKontak.pop();
+            }
+            console.log("Data berhasil direset!");
+            kembali();
+        } else {
+            console.clear();
+            viewMenu();
+        }
+    });
 }
 
 function cariKontak(keyword) {
